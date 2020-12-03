@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+.header {
+  text-align: center;
+}
+
+.menu {
+  margin-left: 10px;
+}
+
+.btn {
+  height: 30px;
+}
+
+.gameContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 420px;
+  height: 420px;
+  gap: 2px;
+  margin: auto;
+}

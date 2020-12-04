@@ -1,63 +1,64 @@
-const View = ((page) => {
-    const squares = [];
-    const setupBoard = (squareMark) => {
+// Gets all the DOM objects
+const DOM = (() => {
+    const squares = document.querySelectorAll('.square');
+    const startGameBtn = document.querySelector('.startBtn');
+    const gameContainer = document.querySelector('.gameContainer');
+
+    return { startGameBtn, squares, gameContainer };
+})();
+
+// Builds the board and players and deals with game logic
+const GameBoard = (() =>  {
+    const container = DOM.gameContainer;
+    const startButton = DOM.startGameBtn;
+    let players = [];
+    let gameBoard = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
+    let roundCounter = 1;
+    
+    startButton.addEventListener('click', () => {
+        players.push(PlayerFactory('p1', 'X'), PlayerFactory('p2', 'O'));
+        renderBoard();
+        startButton.disabled = true;
+    });
+
+    function renderBoard() {
         for (let i = 0; i < 9; i++) {
-            const square = document.createElement('div');
-            square.style.backgroundColor = 'blue';
-            square.textContent = `${squareMark}`;
-            square.style.display = 'flex';
-            square.style.justifyContent = 'center';
-            square.style.alignItems = 'center';
-            page.gameContainer.appendChild(square);
-            squares.push(square);
+            const squareView = document.createElement('div');
+            squareView.style.backgroundColor = 'blue';
+            squareView.textContent = ''
+            squareView.style.display = 'flex';
+            squareView.style.justifyContent = 'center';
+            squareView.style.alignItems = 'center';
+            squareView.addEventListener('click', (e) => {
+                updateSquare(e.target)
+            })
+            container.appendChild(squareView);
+
+            const square = { 'mark': '' };
+            gameBoard.push(square);
         }
     }
 
-    const updateUI = () => {
-        squares.forEach(e => {
-            e.textContent = ''
-        });
+    function updateSquare(square) {
+        if (roundCounter % 2  != 0) {
+            // player1 turn
+            square.textContent = 'X';
+        } else {
+            // player2 turn
+            square.textContent = 'O';
+        }
+        roundCounter++
     }
-    
-
-    return { setupBoard, updateUI }
-
-})({
-    // Passing these as arguments of the view
-    'gameContainer': document.querySelector('.gameContainer')
-});
-
-const GameBoard = (() =>  {
-    const startButton = document.querySelector('.btn');
-    const board = [];
-    const square = {
-        'mark': '-'
-    };
-
-    for (let i = 0; i < 9; i++) {
-        board.push(square); 
-    }
-
-    View.setupBoard(square.mark);
-
-    // Event listeners
-    startButton.addEventListener('click', () => {
-        board.forEach(square => {
-            View.updateUI();
-        })
-    });
-
-
-
-    return { board };
-})();
-
-const Controller = (() => {
+    return { gameBoard, players };
 
 })();
 
-const PlayerFactory = (player, choice) => {
+
+const PlayerFactory = (player, choice, myTurn) => {
     return { player, choice };
 };
 
-const newPlayer = PlayerFactory('p1', 'x');

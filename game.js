@@ -11,12 +11,9 @@ const DOM = (() => {
 const GameBoard = (() =>  {
     const container = DOM.gameContainer;
     const startButton = DOM.startGameBtn;
+    const winConditions = [[0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6]];
     let players = [];
-    let gameBoard = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-    ];
+    let gameBoard = [];
     let roundCounter = 1;
     
     startButton.addEventListener('click', () => {
@@ -33,25 +30,32 @@ const GameBoard = (() =>  {
             squareView.style.display = 'flex';
             squareView.style.justifyContent = 'center';
             squareView.style.alignItems = 'center';
+            squareView.setAttribute('data-index', `${i}`)
             squareView.addEventListener('click', (e) => {
                 updateSquare(e.target)
             })
+            gameBoard.push(squareView);
             container.appendChild(squareView);
-
-            const square = { 'mark': '' };
-            gameBoard.push(square);
         }
+        console.log(gameBoard);
     }
 
     function updateSquare(square) {
-        if (roundCounter % 2  != 0) {
+        if (roundCounter % 2  != 0 && square.textContent == '') {
             // player1 turn
             square.textContent = 'X';
-        } else {
+            roundCounter++;
+            checkForWinner();
+        } else if (square.textContent == '') {
             // player2 turn
             square.textContent = 'O';
+            roundCounter++;
+            checkForWinner();
         }
-        roundCounter++
+    }
+
+    function checkForWinner() {
+        //
     }
     return { gameBoard, players };
 
